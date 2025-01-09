@@ -13,7 +13,8 @@ day-to-day life due to rising living standards have resulted in the increased el
 demand worldwide (NEPRA, 2018). Consequently, in Pakistan, Inefficient energy
 demand is increasing while the resources have been exploited over the years. With 
 inefficient energy infrastructure, Pakistan is suffering from the issue of climate change
-and pollution. The exploitation of energy resources results from inefficient equipment, 
+and pollution. 
+The exploitation of energy resources results from inefficient equipment, 
 ineffective planning and energy market incompetence and pollution. The renewable 
 energy adoption is regarded as one of the cleanest and sustainable way to fight with 
 these challenges. The renewable energy minimizes the environmental impact as it 
@@ -34,6 +35,7 @@ opportunities for the people and economic growth of the country (UNDP, 2019). We
 planned urbanization and efficient energy system results in resilient infrastructure and 
 fosters industry growth i.e., SDG goal 9, Build resilient infrastructure, promote inclusive 
 and sustainable industrialization and foster innovation. 
+
 Energy consumption is one of the most important determinants for economic 
 growth of the country and improves the standards of one’s living (Felipe et al., 2019). 
 Unplanned Urban growth and underdeveloped electricity network significantly effects 
