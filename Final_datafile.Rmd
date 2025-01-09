@@ -1,0 +1,117 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+
+```{r}
+codata <- read.csv(choose.files())
+```
+
+```{r}
+summary(codata)
+```
+
+
+```{r}
+cor(codata[, c('E_ConsRenew', 'CO2_emission', 'Pak_GDP', 'urban_growth_r', "Low_CO2_elec" )])
+```
+
+```{r}
+codata$log_E_ConsRenew <- log(codata$E_ConsRenew)
+
+```
+
+
+```{r}
+Multilnmodel <- lm(E_ConsRenew ~ Low_CO2_elec  +  Pak_GDP + urban_growth_r + CO2_emission,  data = codata)
+summary(Multilnmodel)
+```
+
+```{r}
+hist(Multilnmodel$residuals, breaks = 30, freq = FALSE,
+main = "Histogram of Residuals with Normal Distibution Overlay")
+lines(seq(-1, 0.5, by=.05), dnorm(seq(-1, 0.5, by = .05), mean(Multilnmodel$residuals),
+sd(Multilnmodel$residuals)), col="blue")
+```
+```{r}
+qqPlot(Multilnmodel$residuals)
+```
+
+```{r}
+# Jacque-Bera test for assessing Normality 
+# The null hypothesis is that the residuals are normally distributed
+jarque.bera.test(Multilnmodel$residuals)
+```
+```{r}
+linearHypothesis(Multilnmodel, c(" Low_CO2_elec = 0","Pak_GDP = 0","urban_growth_r=0", "CO2_emission=0"))
+```
+```{r}
+mean(codata$E_ConsRenew)
+```
+```{r}
+mean(Multilnmodel$fitted.values)
+```
+
+```{r}
+# Plot of predicted vs actual values
+plot(Multilnmodel$fitted.values, codata$E_ConsRenew,
+     xlim = c(min(Multilnmodel$fitted.values), max(Multilnmodel$fitted.values)),
+     ylim = c(min(codata$E_ConsRenew), max(codata$E_ConsRenew)),
+     xlab = "Predicted electricity consumption", ylab = "Actual electricity consumption")
+abline(0, 1, col = "red")
+```
+
+* Incorporate higher order terms of the predicted values into the specification * 
+
+
+```{r}
+codata$fits <- Multilnmodel$fitted.values
+codata$fits2 <- (codata$fits)^2
+codata$fits3 <- (codata$fits)^3
+model2 <- lm(E_ConsRenew ~ Low_CO2_elec + Pak_GDP + urban_growth_r + CO2_emission + fits2 + fits3, data = codata)
+summary(model2)
+```
+
+
+* regression residuals/errors *
+
+
+```{r}
+mean(Multilnmodel$residuals)
+```
+
+```{r}
+plot(Multilnmodel$fitted.values, Multilnmodel$residuals)
+abline(0,0)
+```
+
+
+* White test: *
+
+```{r}
+codata$residuals2 <- (Multilnmodel$residuals)^2  # Correcting the calculation of squared residuals
+model3 <- lm(residuals2 ~ Low_CO2_elec + Pak_GDP + urban_growth_r + CO2_emission +  I(Low_CO2_elec^2) + I(Pak_GDP^2) + I(urban_growth_r)^2+I(CO2_emission)^2+ Low_CO2_elec * Pak_GDP + Low_CO2_elec * urban_growth_r + Low_CO2_elec * CO2_emission +  Pak_GDP * urban_growth_r + Pak_GDP * CO2_emission  + urban_growth_r * CO2_emission, data = codata)
+summary(model3)
+```
+```{r}
+RSQ <- summary(model3)$r.squared
+tstat <- nobs(Multilnmodel)*RSQ
+```
+
+* heteroscedasticity test*
+
+```{r}
+nbetas <- summary(model3)$df[1]
+# Compute the p value
+pval <- 1 - pchisq(tstat, nbetas-1)
+# An alternative to White's test - The Breusch-Pagan test
+paste("The test statistic for White's test is", round(tstat,2), "with p value",
+round(pval,8))
+```
+
+```{r}
+bptest(Multilnmodel)
+```
+
